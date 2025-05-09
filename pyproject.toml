@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vschool"
+version = "0.1.0"
+description = "A virtual school "
+authors = [
+    {name = "Bowie375", email = "824962060@qq.com"},
+    {name = "fqcdway"}
+]
+dependencies = []
