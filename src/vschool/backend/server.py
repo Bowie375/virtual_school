@@ -17,7 +17,7 @@ class Server:
         def __init__(self, db: Database):
             self.db = db
         
-        def get(self, location, week, weekday):
+        def get(self, location:str, week:int, weekday:int):
             """Retrieve user profile"""
             room = self.db.get_classroom(location, week, weekday)
             if room is not None:
@@ -27,8 +27,9 @@ class Server:
 
     def run(self, host="127.0.0.1", port=5000):
         # Registering resources with API
-        self.api.add_resource(self.classroom, "/classrom/<string:location>/<int:week>/<int:weekday>", 
+        self.api.add_resource(self.classroom, "/classroom/<string:location>/<int:week>/<int:weekday>", 
                               resource_class_args=[self.db])
+
         self.app.run(host=host, port=port)
 
 

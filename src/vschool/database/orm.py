@@ -31,17 +31,23 @@ class Database:
             return None
     
     def get_classroom(self, location:str, week:int, weekday:int):
-        rooms = self.session.query(Course).join(Schedule).filter(
-            Schedule.location == location,
-            Schedule.start_week <= week,
-            Schedule.end_week >= week,
-            Schedule.weekday == weekday,
-            Course.class_id == Schedule.class_id,
-            Course.course_id == Schedule.course_id,
-        ).all()
+        rooms = self.session.query(Course, Schedule.start_time, Schedule.end_time)\
+            .join(Schedule, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
+            .filter(
+                Schedule.location == location,
+                Schedule.start_week <= week,
+                Schedule.end_week >= week,
+                Schedule.weekday == weekday,
+            ).all()
 
         if rooms:
-            return list(map(lambda x: x.to_dict(), rooms))
+            ret = []
+            for room in rooms:
+                d = room[0].to_dict()
+                d['start_time'] = room[1]
+                d['end_time'] = room[2]
+                ret.append(d)
+            return ret
         else:
             return None
 
@@ -55,5 +61,5 @@ if __name__ == '__main__':
     db = Database("data/test.db")
 
     rooms = db.get_classroom("二教211", 1, 1)
-    print(rooms)
 
+    print(rooms)
