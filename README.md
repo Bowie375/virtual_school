@@ -15,3 +15,8 @@ A map of PKU.
 2. Install the repository using `pip install -e .`
 3. Navigate to `src/vschool/frontend` and run `npm install`
 
+## Running the application
+1. Navigate to the root directory of the repository
+2. Run `python run/main.py`. You can assign frontend port and backend port using the command line arguments `--frontend_port=<port>` and `--backend_port=<port>`, default is 3000 and 5000 respectively.
+3. Open your browser and go to `http://localhost:3000`
+

@@ -5,10 +5,12 @@ from flask_cors import CORS
 from vschool.database.orm import Database
 
 class Server:
-    def __init__(self, db_url='data/test.db'):
+    def __init__(self, db_url='data/test.db', port=5000):
+        print("db_url:", db_url)
         self.db = Database(db_url)
         self.app = Flask(__name__)
         self.api = Api(self.app)
+        self.port = port
 
         # Enable CORS
         CORS(self.app)
@@ -25,12 +27,12 @@ class Server:
             else:
                 return {"error": "User not found"}, 404
 
-    def run(self, host="127.0.0.1", port=5000):
+    def run(self, host="127.0.0.1"):
         # Registering resources with API
         self.api.add_resource(self.classroom, "/classroom/<string:location>/<int:week>/<int:weekday>", 
                               resource_class_args=[self.db])
 
-        self.app.run(host=host, port=port)
+        self.app.run(host=host, port=self.port)
 
 
 if __name__ == "__main__":

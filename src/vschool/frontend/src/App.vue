@@ -1,56 +1,47 @@
 <template>
   <div class="map-container">
-    <img src="./assets/map.png" class="map-image" />
-    <div v-for="(region, index) in regions" :key="index" class="map-region" :style="region.style"
-      @mouseover="hoveredRegion = index" @mouseleave="hoveredRegion = null" @click="selectRegion(index+1)"
-      :class="{ hovered: hoveredRegion === index }"></div>
+    <svg viewBox="0 0 30 20" class="map-svg">
+      <!-- Background image -->
+      <image href="./assets/map.png" x="0" y="0" width="30" height="20" />
 
-    <classroom v-if="selectedRegion" :courseInfos="regionInfo[0]" :classroomName="regionInfo[1]" @close="selectedRegion = null" />
+      <!-- Interactive regions -->
+      <path 
+        v-for="(region, index) in regions" :key="index" :d="region.path" class="map-region"
+        :class="{ hovered: hoveredRegion === index }" @mouseover="hoveredRegion = index"
+        @mouseleave="hoveredRegion = null" @click="selectRegion(index + 1)" />
+    </svg>
+
   </div>
 
+  <Teleport to="body">
+    <Building 
+      v-if="selectedRegion" 
+      :building_name="selectedRegion" 
+      @close="selectedRegion = null" />
+  </Teleport>
+
 </template>
+
 
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
-import classroom from "./components/classroom.vue"
+import Building from "./components/building.vue"
 
 const hoveredRegion = ref(null)
 const selectedRegion = ref(null)
-const regionInfo = ref([])
 
 const regions = [
-  { style: { top: '0%', left: '0%' }, building_name: "二教211" },
-  { style: { top: '0%', left: '33%' } , building_name: "三教103"},
-  { style: { top: '0%', left: '66%' } , building_name: "二教101"},
-  { style: { top: '33%', left: '0%' } , building_name: "二教101"},
-  { style: { top: '33%', left: '33%' }, building_name: "二教101" },
-  { style: { top: '33%', left: '66%' }, building_name: "二教101" },
-  { style: { top: '66%', left: '0%' } , building_name: "二教101"},
-  { style: { top: '66%', left: '33%' }, building_name: "二教101" },
-  { style: { top: '66%', left: '66%' }, building_name: "二教101" },
+  {
+    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z", // Example square
+    building_name: "二教",
+  },
+
+  // Add more real region shapes based on your map
 ]
-
-const fetchData = async (location, week, weekday) => {
-  try {
-    const response = await axios.get(`http://localhost:5000/classroom/${location}/${week}/${weekday}`)
-    return response.data
-  } catch (err) {
-    console.error('Failed to fetch data:', err)
-    return null
-  }
-}
-
-async function selectRegion(regionIdx) {
-  let location = regions[regionIdx-1].building_name
-  let res = await fetchData(location, 1, 1)  
-  if (res === null) {
-    console.error('Failed to fetch data for region', regionIdx)
-  } else {
-    regionInfo.value = [res, location]
-    selectedRegion.value = regionIdx
-    console.log(res, selectedRegion.value)
-  }
+function selectRegion(regionIdx) {
+  console.log("Selected region", regionIdx)
+  selectedRegion.value = regions[regionIdx - 1].building_name
 }
 
 </script>
@@ -59,28 +50,25 @@ async function selectRegion(regionIdx) {
 <style scoped>
 .map-container {
   position: relative;
-  aspect-ratio: 3 / 2;
   width: 60vw;
-  height: auto;
-  /* let aspect-ratio control height */
-  overflow: hidden;
+  aspect-ratio: 3 / 2;
 }
 
-.map-image {
+.map-svg {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
+  display: block;
 }
 
 .map-region {
-  position: absolute;
-  width: 33.3%;
-  height: 33.3%;
-  transition: all 0.3s ease;
+  fill: transparent;
+  stroke: #ffcc00;
+  stroke-width: 0;
+  cursor: pointer;
+  transition: fill 0.3s ease;
 }
 
 .map-region.hovered {
-  box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.7);
-  background-color: rgba(255, 255, 255, 0.0);
+  fill: rgba(255, 255, 0, 0.3);
 }
 </style>
