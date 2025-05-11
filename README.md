@@ -20,3 +20,5 @@ A map of PKU.
 2. Run `python run/main.py`. You can assign frontend port and backend port using the command line arguments `--frontend_port=<port>` and `--backend_port=<port>`, default is 3000 and 5000 respectively.
 3. Open your browser and go to `http://localhost:3000`
 
+## Implement details
+1. [svg editor](https://yqnn.github.io/svg-path-editor/)
