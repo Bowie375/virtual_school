@@ -20,15 +20,33 @@ class Server:
             self.db = db
         
         def get(self, location:str, week:int, weekday:int):
-            """Retrieve user profile"""
+            """Retrieve classroom information"""
             room = self.db.get_classroom(location, week, weekday)
             return room, 200
+
+    class course(Resource):
+        def __init__(self, db: Database):
+            self.db = db
+        
+        def get(self):
+            """Retrieve course information"""
+            course_name = request.args.get('course_name', None)
+            if not course_name:
+                return {"error": "Missing 'course_name' parameter."}, 400
+
+            # Retrieve matching courses from the database
+            course_info = self.db.get_course(course_name)
+            if not course_info:
+                return [], 200  # Return empty list for no results
+
+            return course_info, 200
 
     def run(self, host="127.0.0.1"):
         # Registering resources with API
         self.api.add_resource(self.classroom, "/classroom/<string:location>/<int:week>/<int:weekday>", 
                               resource_class_args=[self.db])
-
+        self.api.add_resource(self.course, "/course/search", 
+                              resource_class_args=[self.db])
         self.app.run(host=host, port=self.port)
 
 

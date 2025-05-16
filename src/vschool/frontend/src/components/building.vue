@@ -1,6 +1,6 @@
 <template>
   <div class="region-detail-container">
-    <img :src="getImage(building_name)" class="background-image" @click="showTable = true" />
+    <img :src="getImage(buildingName)" class="background-image" @click="showTable = true" />
 
     <div class="floors-table" v-if="showTable">
       <div class="header">
@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(floor, index) in building_floors[building_name]" :key="index">
+          <tr v-for="(floor, index) in buildingFloors[buildingName]" :key="index">
             <td class="floor-cell">{{ floor.name }}</td>
             <td class="room-cell">
               <div class="room-buttons">
@@ -68,12 +68,12 @@ import axios from 'axios'
 import classroom from './classroom.vue'
 
 const props = defineProps({
-  building_name: String,
+  buildingName: String,
 })
 
 const emit = defineEmits(['close'])
 const showTable = ref(true)
-const building_floors = {
+const buildingFloors = {
   "二教": [ { name: "1st Floor", rooms: ["101", "102", "105", "106", "107", "109"] },
             { name: "2nd Floor", rooms: ["202", "203", "205", "206", "207", "210", "211"] },
             { name: "3nd Floor", rooms: ["302", "304", "306", "307", "308", "309", "311", "313", "314", "315", "316", "317", "318", "319"] },
@@ -101,7 +101,7 @@ const fetchData = async (location, week, weekday) => {
 }
 
 async function goToClassroom(roomId) {
-  let location = props.building_name + roomId
+  let location = props.buildingName + roomId
   let week = selectedWeek.value
   if (selectedWeek.value === 'Today') {
     week = 1

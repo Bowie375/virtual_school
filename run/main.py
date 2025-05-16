@@ -1,5 +1,6 @@
 import os
 import sys
+import signal
 import argparse
 
 import subprocess
@@ -22,19 +23,31 @@ def start_backend(port=5000):
     server.run()
 
 def main(args):
-    # start backend server
+    def cleanup():
+        print("\nShutting down processes...")
+        if p_backend.is_alive():
+            p_backend.terminate()
+            print("Backend server terminated.")
+        if p_frontend.is_alive():
+            p_frontend.terminate()
+            print("Frontend server terminated.")
+        sys.exit(0)
+
     p_backend = multiprocessing.Process(target=start_backend, args=(args.backend_port,))
     p_backend.start()
     print(f"Backend server started on port {args.backend_port}")
 
-    # start frontend server
     p_frontend = multiprocessing.Process(target=start_frontend, args=(args.frontend_port,))
     p_frontend.start()
     print(f"Frontend server started on port {args.frontend_port}")
+    print(f"Access the frontend at http://localhost:{args.frontend_port}")
 
-    # wait for the processes to finish
-    p_backend.join()
-    p_frontend.join()
+    try:
+        # wait for the processes to finish
+        p_backend.join()
+        p_frontend.join()
+    except KeyboardInterrupt:
+        cleanup()
 
 
 if __name__ == '__main__':
