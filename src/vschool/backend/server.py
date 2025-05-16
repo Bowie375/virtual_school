@@ -22,10 +22,7 @@ class Server:
         def get(self, location:str, week:int, weekday:int):
             """Retrieve user profile"""
             room = self.db.get_classroom(location, week, weekday)
-            if room is not None:
-                return room, 200
-            else:
-                return {"error": "User not found"}, 404
+            return room, 200
 
     def run(self, host="127.0.0.1"):
         # Registering resources with API

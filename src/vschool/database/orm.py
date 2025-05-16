@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from decimal import Decimal
+from sqlalchemy import literal, and_, text
 
 from vschool.database.entities import *
 
@@ -31,6 +32,7 @@ class Database:
             return None
     
     def get_classroom(self, location:str, week:int, weekday:int):
+        freq = (((week % 2) == 0) << 1) + (week % 2)
         rooms = self.session.query(Course, Schedule.start_time, Schedule.end_time)\
             .join(Schedule, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
             .filter(
@@ -38,6 +40,7 @@ class Database:
                 Schedule.start_week <= week,
                 Schedule.end_week >= week,
                 Schedule.weekday == weekday,
+                (Schedule.frequency.op('&')(literal(freq)) != 0),
             ).all()
 
         if rooms:

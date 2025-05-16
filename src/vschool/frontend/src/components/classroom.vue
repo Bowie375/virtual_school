@@ -36,7 +36,6 @@ import { ref, watch } from 'vue'
 // Define props
 const props = defineProps({
   courseInfos: {
-    type: Array,
     required: true,
   },
   classroomName: {

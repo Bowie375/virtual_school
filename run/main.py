@@ -9,12 +9,12 @@ from vschool.backend.server import Server
 
 def start_frontend(port=3000):
     os.makedirs("outputs", exist_ok=True)
-    with open("outputs/frontend.log", "w") as f:
+    with open("outputs/frontend.log", "w", encoding="utf-8") as f:
         subprocess.run(['npm', 'run', '--prefix=src/vschool/frontend', 'dev', '--', f'--port={port}'], 
                        stdout=f, stderr=f, shell=True)
 
 def start_backend(port=5000):
-    sys.stdout = open("outputs/backend.log", "w")
+    sys.stdout = open("outputs/backend.log", "w", encoding="utf-8")
     sys.stderr = sys.stdout
 
     db_url = 'src/vschool/data/test.db'
