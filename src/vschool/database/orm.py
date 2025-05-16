@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import literal, and_, text
+from sqlalchemy import literal, and_, or_, text
 
 from vschool.database.entities import *
 
@@ -57,7 +57,7 @@ class Database:
     def get_course(self, course_name:str):
         courses = self.session.query(Course, Schedule)\
             .join(Schedule, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
-            .filter(Course.course_name == course_name)\
+            .filter(Course.course_name.ilike(f"%{course_name}%"))\
             .order_by(Course.class_id, Schedule.weekday, Schedule.start_time)\
             .all()
         

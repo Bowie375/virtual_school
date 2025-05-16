@@ -11,16 +11,27 @@
   </div>
 
   <div class="map-container">
+    <!-- Info Box -->
+    <div v-if="hoveredRegion !== null" class="info-box">
+      <h3>{{ regions[hoveredRegion].buildingName }}</h3>
+      <p>{{ regions[hoveredRegion].description }}</p>
+    </div>
+
     <svg viewBox="0 0 30 20" class="map-svg">
-      <!-- Background image -->
       <image href="./assets/map.png" x="0" y="0" width="30" height="20" />
 
       <!-- Interactive regions -->
-      <path v-for="(region, index) in regions" :key="index" :d="region.path" class="map-region"
-        :class="{ hovered: hoveredRegion === index }" @mouseover="hoveredRegion = index"
-        @mouseleave="hoveredRegion = null" @click="selectRegion(index + 1)" />
+      <path
+        v-for="(region, index) in regions"
+        :key="index"
+        :d="region.path"
+        class="map-region"
+        :class="{ hovered: hoveredRegion === index }"
+        @mouseover="hoveredRegion = index"
+        @mouseleave="hoveredRegion = null"
+        @click="selectRegion(index + 1)"
+      />
     </svg>
-
   </div>
 
   <Teleport to="body">
@@ -48,6 +59,7 @@ const regions = [
   {
     path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z", // Example square
     buildingName: "二教",
+    description: "第二教学楼"
   },
 
 ]
@@ -79,6 +91,7 @@ function searchCourse() {
   display: block;
 }
 
+/* Interactive Map Region Styles */
 .map-region {
   fill: transparent;
   stroke: #ffcc00;
@@ -89,6 +102,38 @@ function searchCourse() {
 
 .map-region.hovered {
   fill: rgba(255, 255, 0, 0.3);
+  stroke-width: 0;
+}
+
+/* Fancy Info Box */
+.info-box {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  max-width: 220px;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.info-box h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: rgba(213, 46, 46, 0.667);
+  font-weight: 600;
+}
+
+.info-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: rgba(93, 13, 13, 0.8);
 }
 
 .search-container {
