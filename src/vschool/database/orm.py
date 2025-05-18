@@ -56,37 +56,26 @@ class Database:
 
     def get_course(self, course_name:str):
         courses = self.session.query(Course, Schedule)\
-            .join(Schedule, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
+            .outerjoin(Schedule, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
             .filter(Course.course_name.ilike(f"%{course_name}%"))\
-            .order_by(Course.class_id, Schedule.weekday, Schedule.start_time)\
+            .order_by(Course.course_name, Course.class_id, Schedule.weekday, Schedule.start_time)\
             .all()
         
         if courses:
             ret = {}
             for c in courses:
                 course = c[0].to_dict()
-                s = c[1].to_dict()
                 if ret.get((course["course_id"], course["class_id"]), None) is None:
                     ret[(course["course_id"], course["class_id"])] = {"course": course, "schedule": []}
-                schedule = f"第{s['start_week']}至{s['end_week']}周 "
-                schedule += f"{['单','双','每'][s['frequency']-1]}周"
-                schedule += f"星期{['一', '二', '三', '四', '五', '六', '日'][s['weekday']-1]}"
-                schedule += f"{s['start_time']}~{s['end_time']}节"
-                ret[(course["course_id"], course["class_id"])]["schedule"]\
-                    .append(dict(time=schedule, location=s['location']))
+                if c[1]:
+                    s = c[1].to_dict()
+                    schedule = f"第{s['start_week']}至{s['end_week']}周 "
+                    schedule += f"{['单','双','每'][s['frequency']-1]}周"
+                    schedule += f"星期{['一', '二', '三', '四', '五', '六', '日'][s['weekday']-1]}"
+                    schedule += f"{s['start_time']}~{s['end_time']}节"
+                    ret[(course["course_id"], course["class_id"])]["schedule"]\
+                        .append(dict(time=schedule, location=s['location']))
             return list(ret.values())
-        else:
-            courses = self.session.query(Course)\
-                .filter(Course.course_name == course_name)\
-                .order_by(Course.class_id)\
-                .all()
-            if courses:
-                ret = []
-                for c in courses:
-                    ret.append(dict(course=c.to_dict(), schedule=[]))
-                return ret
-            else:
-                return None
 
     def excute_sql(self, sql):
         self.session.execute(sql)
@@ -103,7 +92,7 @@ if __name__ == '__main__':
     """
 
     """ example usage of get_course()
-    courses = db.get_course("冷湖野外联合实习考察讨论班")
-    print(courses)
     """
+    courses = db.get_course("实习")
+    print(courses)
 

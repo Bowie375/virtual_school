@@ -20,7 +20,7 @@
           :class="{ expanded: expandedIndex === index }"
         >
           <div class="summary">
-            <h3>📘 Class ID: {{ c.course.class_id }}</h3>
+            <h3>📘 Class ID: {{ c.course.course_name }} - {{ c.course.class_id }} 班</h3>
             <p><strong>Teacher:</strong> {{ c.course.teacher }}</p>
             <p><strong>Department:</strong> {{ c.course.department }}</p>
           </div>
@@ -74,6 +74,7 @@ onMounted(async () => {
     console.error('Search failed:', err)
     courses.value = []
   } finally {
+    console.log('Search results:', courses.value)
     loading.value = false
   }
 })
