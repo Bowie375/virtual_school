@@ -152,7 +152,7 @@ onMounted(async () => {
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
   border-left: 4px solid #8be9fd;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: background 0.1s ease, transform 0.1s ease;
 }
 .course-card:hover {
   background: rgba(255, 255, 255, 0.18);
@@ -206,7 +206,7 @@ onMounted(async () => {
 /* Animation */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0s ease;
 }
 .fade-slide-enter-from,
 .fade-slide-leave-to {

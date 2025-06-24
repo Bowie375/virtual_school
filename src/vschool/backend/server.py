@@ -21,7 +21,11 @@ class Server:
         
         def get(self, location:str, week:int, weekday:int):
             """Retrieve classroom information"""
-            room = self.db.get_classroom(location, week, weekday)
+            if location.find('_') < 0:
+                room = self.db.get_classroomMeta(location, week, weekday)
+            else:
+                location = location.replace('_', '')
+                room = self.db.get_classroom(location, week, weekday)
             return room, 200
 
     class course(Resource):

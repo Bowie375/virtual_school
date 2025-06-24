@@ -36,7 +36,12 @@
             <td class="floor-cell">{{ floor.name }}</td>
             <td class="room-cell">
               <div class="room-buttons">
-                <button class="classroom-btn" v-for="room in floor.rooms" :key="room" @click="goToClassroom(room)">
+                <button
+                  v-for="room in floor.rooms"
+                  :key="room"
+                  :class="['classroom-btn', isTaken(room) ? 'taken' : 'available']"
+                  @click="goToClassroom(room)"
+                >
                   {{ room }}
                 </button>
               </div>
@@ -63,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 import classroom from './classroom.vue'
 
@@ -86,6 +91,7 @@ const selectedWeekday = ref('Today')
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const selectedClassroom = ref(null)
 const classroomInfo = ref([])
+const takenClassrooms = ref([])
 
 const images = import.meta.glob('../assets/*.png', { eager: true })
 const getImage = (name) => images[`../assets/${name}.png`]?.default || images['../assets/default.png'].default
@@ -101,7 +107,7 @@ const fetchData = async (location, week, weekday) => {
 }
 
 async function goToClassroom(roomId) {
-  let location = props.buildingName + roomId
+  let location = props.buildingName + '_' + roomId
   let week = selectedWeek.value
   if (selectedWeek.value === 'Today') {
     week = 1
@@ -118,6 +124,43 @@ async function goToClassroom(roomId) {
   classroomInfo.value = [res, location]
   selectedClassroom.value = roomId
   console.log(res, selectedClassroom.value)
+}
+
+onMounted(() => {
+  console.log('Building component mounted')
+  handleSelectionChange()
+})
+
+function isTaken(roomId) {
+  return takenClassrooms.value.includes(roomId)
+}
+
+watch(selectedWeek, (newVal, oldVal) => {
+  console.log('Week changed from', oldVal, 'to', newVal)
+  handleSelectionChange()
+})
+
+watch(selectedWeekday, (newVal, oldVal) => {
+  console.log('Weekday changed from', oldVal, 'to', newVal)
+  handleSelectionChange()
+})
+
+async function handleSelectionChange() {
+  let week = selectedWeek.value
+  if (selectedWeek.value === 'Today') {
+    week = 1
+  }
+  let weekday = 1
+  if (selectedWeekday.value === 'Today') {
+    const today = new Date()
+    weekday = -today.getDay() + 7
+  } else {
+    weekday = weekdays.indexOf(selectedWeekday.value) + 1
+  }
+
+  let res = await fetchData(props.buildingName, week, weekday)
+  takenClassrooms.value = res
+  console.log("Taken classrooms: ", res)
 }
 
 </script>
@@ -209,18 +252,37 @@ th {
 }
 
 .classroom-btn {
-  background-color: #3498db;
-  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: bold;
   border: none;
-  border-radius: 6px;
-  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s;
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-.classroom-btn:hover {
-  background-color: #2980b9;
+.classroom-btn.taken {
+  background: linear-gradient(135deg, #42e695, #3bb2b8);
+  color: white;
+}
+
+.classroom-btn.taken:hover {
+  background: linear-gradient(135deg, #2bc4ad, #1da9a3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.classroom-btn.available {
+  background: linear-gradient(135deg, #aaa, #777);
+  color: #eee;
+  opacity: 0.85;
+}
+
+.classroom-btn.available:hover {
+  background: linear-gradient(135deg, #707876, #748181);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .close-container {

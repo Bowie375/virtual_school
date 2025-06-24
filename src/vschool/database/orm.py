@@ -54,6 +54,25 @@ class Database:
         else:
             return None
 
+    def get_classroomMeta(self, location:str, week:int, weekday:int):
+        freq = (((week % 2) == 0) << 1) + (week % 2)
+        rooms = self.session.query(Schedule.location)\
+            .join(Course, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
+            .filter(
+                Schedule.location.startswith(location),
+                Schedule.start_week <= week,
+                Schedule.end_week >= week,
+                Schedule.weekday == weekday,
+                (Schedule.frequency.op('&')(literal(freq)) != 0),
+            ).all()
+
+        if rooms:
+            start_idx = len(location)
+            ret = [room[0][start_idx:] for room in rooms]
+            return ret
+        else:
+            return None
+
     def get_course(self, course_name:str):
         courses = self.session.query(Course, Schedule)\
             .outerjoin(Schedule, (Course.course_id == Schedule.course_id) & (Course.class_id == Schedule.class_id))\
@@ -87,7 +106,7 @@ if __name__ == '__main__':
     db = Database("data/test.db")
 
     """ example usage of get_classroom()
-    rooms = db.get_classroom("二教211", 1, 1)
+    rooms = db.get_classroomMeta("二教", 1, 1)
     print(rooms)
     """
 
