@@ -88,10 +88,10 @@ const regions = [
     description: "第二教学楼"
   },
   {
-    marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
-    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
-    buildingName: "二教",
-    description: "第二教学楼"
+    marker: {x:19.3, y:10.5, w:2., h:2., href:markerImages['./assets/marker.gif'] },
+    path: "M19.6 11.5C20.1 11.1 20.4 11.2 20.8 11.15L20.833 12.299 19.597 12.31 Z",
+    buildingName: "理教",
+    description: "理科教学楼"
   },
   {
     marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
