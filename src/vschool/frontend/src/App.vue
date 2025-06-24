@@ -34,6 +34,19 @@
     </svg>
   </div>
 
+  <div class="left-column">
+    <a
+      v-for="(item, index) in leftColumnItems"
+      :key="index"
+      :href="item.link"
+      class="left-row"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {{ item.name }}
+    </a>
+  </div>
+
   <Teleport to="body">
     <Building v-if="selectedRegion" :buildingName="selectedRegion" @close="selectedRegion = null" />
   </Teleport>
@@ -57,11 +70,47 @@ const searchQuery = ref(null)
 const showSearchResults = ref(false)
 const regions = [
   {
-    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z", // Example square
+    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
     buildingName: "二教",
     description: "第二教学楼"
   },
-
+  {
+    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
+    buildingName: "二教",
+    description: "第二教学楼"
+  },
+    {
+    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
+    buildingName: "二教",
+    description: "第二教学楼"
+  },
+    {
+    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
+    buildingName: "二教",
+    description: "第二教学楼"
+  },
+]
+const leftColumnItems = [
+  {
+    name: "校内门户",
+    link: "https://portal.pku.edu.cn/"
+  },
+  {
+    name: "北大教学网",
+    link: "https://course.pku.edu.cn/"
+  },
+  {
+    name: "北大树洞",
+    link: "https://treehole.pku.edu.cn/"
+  },
+  {
+    name: "北大BBS",
+    link: "https://bbs.pku.edu.cn/"
+  },
+  {
+    name: "课程测评",
+    link: "https://courses.pinzhixiaoyuan.com/"
+  },
 ]
 
 function selectRegion(regionIdx) {
@@ -73,7 +122,6 @@ function searchCourse() {
   console.log("Searching for", searchQuery.value)
   showSearchResults.value = true
 }
-
 
 </script>
 
@@ -91,7 +139,6 @@ function searchCourse() {
   display: block;
 }
 
-/* Interactive Map Region Styles */
 .map-region {
   fill: transparent;
   stroke: #ffcc00;
@@ -105,7 +152,6 @@ function searchCourse() {
   stroke-width: 0;
 }
 
-/* Fancy Info Box */
 .info-box {
   position: absolute;
   top: 1rem;
@@ -169,5 +215,48 @@ function searchCourse() {
   width: 30px;
   height: 30px;
   color: #333;
+}
+
+.left-column {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background: linear-gradient(to bottom, #b52626, #ffcccc);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+  gap: 1rem;
+  z-index: 5;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Link row style */
+.left-row {
+  display: block;
+  padding: 0.8rem 1.2rem;
+  margin-left: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  border-radius: 0 1rem 1rem 0;
+  background: rgba(255, 255, 255, 0.08);
+  transition: 
+    font-size 0.3s ease,
+    transform 0.3s ease,
+    margin-left 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Hover effect: highlight the row */
+.left-row:hover {
+  font-size: 1.25rem;
+  transform: scale(1.05);
+  margin-left: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 </style>
