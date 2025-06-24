@@ -31,6 +31,18 @@
         @mouseleave="hoveredRegion = null"
         @click="selectRegion(index + 1)"
       />
+
+      <image
+        v-for="(region, index) in regions"
+        :key="index"
+        :href="region.marker.href"
+        :x="region.marker.x"
+        :y="region.marker.y"
+        :width="region.marker.w"
+        :height="region.marker.h"
+        class="map-marker"
+      />
+
     </svg>
   </div>
 
@@ -63,28 +75,32 @@ import { ref } from 'vue'
 import axios from 'axios'
 import Building from "./components/building.vue"
 import Course from "./components/course.vue"
-
 const hoveredRegion = ref(null)
 const selectedRegion = ref(null)
 const searchQuery = ref(null)
 const showSearchResults = ref(false)
+const markerImages = import.meta.glob('./assets/*.gif', { eager: true, as: 'url' })
 const regions = [
   {
+    marker: {x:19.3, y:13.3, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
     path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
     buildingName: "二教",
     description: "第二教学楼"
   },
   {
+    marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
     path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
     buildingName: "二教",
     description: "第二教学楼"
   },
-    {
+  {
+    marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
     path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
     buildingName: "二教",
     description: "第二教学楼"
   },
-    {
+  {
+    marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
     path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
     buildingName: "二教",
     description: "第二教学楼"
@@ -150,6 +166,10 @@ function searchCourse() {
 .map-region.hovered {
   fill: rgba(255, 255, 0, 0.3);
   stroke-width: 0;
+}
+
+.map-marker {
+  pointer-events: none;
 }
 
 .info-box {
