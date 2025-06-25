@@ -10,4 +10,9 @@ authors = [
     {name = "Bowie375", email = "824962060@qq.com"},
     {name = "fqcdway"}
 ]
-dependencies = []
+dependencies = [
+    "flask",
+    "flask_restful",
+    "flask_cors",
+    "sqlalchemy"
+]

@@ -82,10 +82,16 @@ const showSearchResults = ref(false)
 const markerImages = import.meta.glob('./assets/*.gif', { eager: true, as: 'url' })
 const regions = [
   {
-    marker: {x:19.3, y:13.3, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
-    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
+    marker: {x:19.2, y:13.1, w:2, h:2, href:markerImages['./assets/marker.gif'] },
+    path: "M 19.666 14.082 L 19.717 15.848 L 20.484 15.822 L 20.433 14.722 L 21.406 14.722 L 21.354 14.031 Z",
     buildingName: "二教",
     description: "第二教学楼"
+  },
+  {
+    marker: {x:20.1, y:14.1, w:2., h:2., href:markerImages['./assets/marker.gif'] },
+    path: "M 20.638 15.72 L 20.587 15.157 L 21.38 15.157 L 21.406 15.643 Z",
+    buildingName: "三教",
+    description: "第三教学楼"
   },
   {
     marker: {x:19.3, y:10.5, w:2., h:2., href:markerImages['./assets/marker.gif'] },
@@ -94,17 +100,17 @@ const regions = [
     description: "理科教学楼"
   },
   {
-    marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
-    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
-    buildingName: "二教",
-    description: "第二教学楼"
-  },
-  {
-    marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
-    path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
-    buildingName: "二教",
-    description: "第二教学楼"
-  },
+    marker: {x:12.5, y:6.5, w:2.5, h:2.5, href:markerImages['./assets/marker2.gif'] },
+    path: "M 12.952 8.897 L 13.96 9.247 L 15.063 9.22 L 15.48 9.368 L 15.857 9.099 L 16.234 9.166 L 18.561 8.695 L 18.292 7.444 L 18.372 7.027 L 18.251 6.274 L 17.781 5.642 L 15.763 5.843 L 15.534 6.341 L 13.113 6.422 L 12.763 7.888 Z",
+    buildingName: "未名湖",
+    description: "未名湖"
+  }
+  // {
+  //   marker: {x:10, y:10, w:2.5, h:2.5, href:markerImages['./assets/marker.gif'] },
+  //   path: "M19.6 14 21.5 13.9 21.6 15.7 19.67 15.75 Z",
+  //   buildingName: "二教",
+  //   description: "第二教学楼"
+  // },
 ]
 const leftColumnItems = [
   {
@@ -131,7 +137,8 @@ const leftColumnItems = [
 
 function selectRegion(regionIdx) {
   console.log("Selected region", regionIdx)
-  selectedRegion.value = regions[regionIdx - 1].buildingName
+  if(regionIdx < 4)
+    selectedRegion.value = regions[regionIdx - 1].buildingName
 }
 
 function searchCourse() {
