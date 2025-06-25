@@ -22,14 +22,6 @@ class Database:
         Session = sessionmaker(bind=engine)
         self.session = Session()
         print("[INFO]database constructed")
-
-    def confirm_user(self, username, password_hash):
-        user = self.session.query(Course).filter_by(
-            username=username, password_hash=password_hash).first()
-        if user:
-            return user.user_id
-        else:
-            return None
     
     def get_classroom(self, location:str, week:int, weekday:int):
         freq = (((week % 2) == 0) << 1) + (week % 2)
