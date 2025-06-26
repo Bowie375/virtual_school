@@ -11,7 +11,7 @@
         <label>
           Week:
           <select v-model="selectedWeek">
-            <option value="Today">Today</option>
+            <option value="Today">This week</option>
             <option v-for="w in 5" :key="w" :value="w">{{ w }}</option>
           </select>
         </label>
@@ -139,27 +139,34 @@ async function goToClassroom(roomId) {
 
 onMounted(() => {
   console.log('Building component mounted')
-  handleSelectionChange()
+  handleSelectionWeekChange()
 })
 
 function isTaken(roomId) {
+  if(takenClassrooms.value === null)
+    return false
   return takenClassrooms.value.includes(roomId)
 }
 
 watch(selectedWeek, (newVal, oldVal) => {
   console.log('Week changed from', oldVal, 'to', newVal)
-  handleSelectionChange()
+  handleSelectionWeekChange()
 })
 
 watch(selectedWeekday, (newVal, oldVal) => {
   console.log('Weekday changed from', oldVal, 'to', newVal)
-  handleSelectionChange()
+  handleSelectionWeekDayChange()
 })
 
-async function handleSelectionChange() {
+async function handleSelectionWeekChange() {
   let week = selectedWeek.value
   if (selectedWeek.value === 'Today') {
     week = 1
+  }
+  else{
+    if (selectedWeekday.value === 'Today'){
+      selectedWeekday.value = 'Monday'
+    }
   }
   let weekday = 1
   if (selectedWeekday.value === 'Today') {
@@ -171,8 +178,31 @@ async function handleSelectionChange() {
 
   let res = await fetchData(props.buildingName, week, weekday)
   takenClassrooms.value = res
-  console.log("Taken classrooms: ", res)
+  console.log("Taken classrooms: ", res, selectedWeek.value, selectedWeekday.value)
 }
+
+async function handleSelectionWeekDayChange() {
+  let week = selectedWeek.value
+  if (selectedWeek.value === 'Today') {
+    week = 1
+  }
+  let weekday = 1
+  if (selectedWeekday.value === 'Today') {
+    selectedWeek.value = 'Today'
+    const today = new Date()
+    weekday = -today.getDay() + 7
+  } else {
+    weekday = weekdays.indexOf(selectedWeekday.value) + 1
+  }
+
+  let res = await fetchData(props.buildingName, week, weekday)
+  takenClassrooms.value = res
+  console.log("Taken classrooms: ", res, selectedWeek.value, selectedWeekday.value)
+}
+
+
+
+
 
 </script>
 

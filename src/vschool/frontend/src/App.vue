@@ -1,6 +1,6 @@
-<template>
+<template >
   <div class="search-container">
-    <input v-model="searchQuery" placeholder="Search For Course..." class="search-input" />
+    <input v-model="searchQuery" placeholder="Search For Course..." class="search-input" @keydown.enter="searchCourse()"/>
     <button class="search-btn" @click="searchCourse()">
       <!-- Inline magnifier SVG -->
       <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,6 +64,10 @@
   </Teleport>
 
   <Teleport to="body">
+    <Spot v-if="selectedSpot" :spotName="selectedSpot" @close="selectedSpot = null" />
+  </Teleport>
+
+  <Teleport to="body">
     <Course v-if="showSearchResults" :courseName="searchQuery" @close="showSearchResults = false" />
   </Teleport>
 
@@ -73,10 +77,13 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import Spot from "./components/spot.vue"
 import Building from "./components/building.vue"
 import Course from "./components/course.vue"
+import carousel from "./components/carousel.vue"
 const hoveredRegion = ref(null)
 const selectedRegion = ref(null)
+const selectedSpot = ref(null)
 const searchQuery = ref(null)
 const showSearchResults = ref(false)
 const markerImages = import.meta.glob('./assets/*.gif', { eager: true, as: 'url' })
@@ -139,6 +146,8 @@ function selectRegion(regionIdx) {
   console.log("Selected region", regionIdx)
   if(regionIdx < 4)
     selectedRegion.value = regions[regionIdx - 1].buildingName
+  else
+    selectedSpot.value = regions[regionIdx - 1].buildingName
 }
 
 function searchCourse() {
